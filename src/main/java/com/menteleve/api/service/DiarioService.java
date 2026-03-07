@@ -18,7 +18,6 @@ public class DiarioService {
     }
 
     public Diario salvar(Diario diario) {
-        // Aqui poderíamos colocar regras de negócio antes de salvar
         return repository.save(diario);
     }
 }

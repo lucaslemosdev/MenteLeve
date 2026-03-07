@@ -6,5 +6,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DiarioRepository extends JpaRepository<Diario, Long> {
-    // Aqui o Spring Data JPA faz a mágica acontecer.
 }
