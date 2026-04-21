@@ -1,17 +1,27 @@
 package com.menteleve.api.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tb_diario")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Diario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;
 
     @Column(nullable = false)
     private String titulo;
@@ -19,7 +29,13 @@ public class Diario {
     @Column(columnDefinition = "TEXT")
     private String conteudo;
 
-    private Integer nivelHumor; // 1 a 5, por exemplo
+    @Column(name = "nivel_humor")
+    private Integer nivelHumor; // 1 a 5
 
+    @Column(name = "data_registro")
     private LocalDateTime dataRegistro = LocalDateTime.now();
+
+    @Column(name = "tags")
+    private String tags;
 }
+
