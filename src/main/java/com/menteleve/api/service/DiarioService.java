@@ -1,6 +1,7 @@
 package com.menteleve.api.service;
 
 import com.menteleve.api.dto.DiarioDTO;
+import com.menteleve.api.mapper.DiarioMapper;
 import com.menteleve.api.model.Diario;
 import com.menteleve.api.model.Usuario;
 import com.menteleve.api.repository.DiarioRepository;
@@ -19,6 +20,7 @@ public class DiarioService {
 
     private final DiarioRepository diarioRepository;
     private final UsuarioRepository usuarioRepository;
+    private final DiarioMapper diarioMapper;
 
     public DiarioDTO criarDiario(DiarioDTO dto) {
         Usuario usuario = usuarioRepository.findById(dto.getUsuarioId())
@@ -33,23 +35,23 @@ public class DiarioService {
                 .build();
 
         Diario diarioSalvo = diarioRepository.save(diario);
-        return converterParaDTO(diarioSalvo);
+        return diarioMapper.toDTO(diarioSalvo);
     }
 
     public DiarioDTO obterDiarioPorId(Long id) {
         Diario diario = diarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Diário não encontrado"));
-        return converterParaDTO(diario);
+        return diarioMapper.toDTO(diario);
     }
 
     public Page<DiarioDTO> listarDiariosDoUsuario(Long usuarioId, Pageable pageable) {
         return diarioRepository.findByUsuarioId(usuarioId, pageable)
-                .map(this::converterParaDTO);
+                .map(diarioMapper::toDTO);
     }
 
     public List<DiarioDTO> listarDiariosDoUsuarioPorPeriodo(Long usuarioId, LocalDateTime dataInicio, LocalDateTime dataFim) {
         return diarioRepository.findByUsuarioIdAndDataRegistroBetween(usuarioId, dataInicio, dataFim).stream()
-                .map(this::converterParaDTO)
+                .map(diarioMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
@@ -63,7 +65,7 @@ public class DiarioService {
         diario.setTags(dto.getTags());
 
         Diario diarioAtualizado = diarioRepository.save(diario);
-        return converterParaDTO(diarioAtualizado);
+        return diarioMapper.toDTO(diarioAtualizado);
     }
 
     public void deletarDiario(Long id) {
@@ -72,16 +74,6 @@ public class DiarioService {
         diarioRepository.delete(diario);
     }
 
-    private DiarioDTO converterParaDTO(Diario diario) {
-        return DiarioDTO.builder()
-                .id(diario.getId())
-                .usuarioId(diario.getUsuario().getId())
-                .titulo(diario.getTitulo())
-                .conteudo(diario.getConteudo())
-                .nivelHumor(diario.getNivelHumor())
-                .dataRegistro(diario.getDataRegistro())
-                .tags(diario.getTags())
-                .build();
-    }
+    // ...existing code...
 }
 
