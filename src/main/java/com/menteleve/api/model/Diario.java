@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
@@ -32,8 +33,9 @@ public class Diario {
     @Column(name = "nivel_humor")
     private Integer nivelHumor; // 1 a 5
 
+    @CreationTimestamp
     @Column(name = "data_registro")
-    private LocalDateTime dataRegistro = LocalDateTime.now();
+    private LocalDateTime dataRegistro;
 
     @Column(name = "tags")
     private String tags;
