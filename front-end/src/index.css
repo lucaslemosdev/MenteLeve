@@ -1,0 +1,112 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+/* ============================================================
+   MENTE LEVE — Design System
+   Paleta: Verde-Sage acolhedor, off-white quente, neutros Zinc
+   Tipografia: Outfit (Google Fonts)
+   ============================================================ */
+
+@theme {
+  /* --- Cores primárias (Verde-Sage) --- */
+  --color-primary-50: #f0f7f5;
+  --color-primary-100: #d9ede9;
+  --color-primary-200: #b5dbd3;
+  --color-primary-300: #84c2b7;
+  --color-primary-400: #57a898;
+  --color-primary-500: #3d8d7e;
+  --color-primary-600: #2f7165;
+  --color-primary-700: #285b52;
+  --color-primary-800: #244a43;
+  --color-primary-900: #213d38;
+
+  /* --- Accent (Pêssego suave) --- */
+  --color-accent-400: #e8a48e;
+  --color-accent-500: #d98670;
+  --color-accent-600: #c46b55;
+
+  /* --- Backgrounds --- */
+  --color-bg: #f5f7f4;
+  --color-surface: #ffffff;
+  --color-surface-alt: #eef2ef;
+
+  /* --- Texto --- */
+  --color-text: #1c2b27;
+  --color-text-muted: #5a6e68;
+  --color-text-light: #8fa39c;
+
+  /* --- Semânticos --- */
+  --color-success: #4a9e6a;
+  --color-error: #c25a5a;
+  --color-warning: #d97706;
+
+  /* --- Tipografia --- */
+  --font-sans: 'Outfit', system-ui, sans-serif;
+
+  /* --- Bordas e sombras --- */
+  --radius-card: 1.5rem;
+  --radius-btn: 0.75rem;
+  --shadow-card: 0 4px 24px -8px rgba(28, 43, 39, 0.08);
+  --shadow-card-hover: 0 8px 32px -8px rgba(28, 43, 39, 0.14);
+}
+
+/* ============================================================
+   RESET E BASE
+   ============================================================ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: 'Outfit', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  min-height: 100dvh;
+}
+
+/* ============================================================
+   UTILITÁRIOS CUSTOMIZADOS
+   ============================================================ */
+
+/* Liquid glass card */
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: var(--shadow-card), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* Scrollbar suave */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary-200);
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-300);
+}
+
+/* Focus ring acessível */
+:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Transição padrão */
+.transition-smooth {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
