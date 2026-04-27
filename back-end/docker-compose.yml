@@ -1,0 +1,39 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: menteleve-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: menteleve_db
+      POSTGRES_USER: menteleve_user
+      POSTGRES_PASSWORD: menteleve_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - menteleve_postgres_data:/var/lib/postgresql/data
+    networks:
+      - menteleve-network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: menteleve-pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@menteleve.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    volumes:
+      - menteleve_pgadmin_data:/var/lib/pgadmin
+    networks:
+      - menteleve-network
+
+volumes:
+  menteleve_postgres_data:
+  menteleve_pgadmin_data:
+
+networks:
+  menteleve-network:
+    driver: bridge

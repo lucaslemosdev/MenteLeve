@@ -4,6 +4,7 @@ import com.menteleve.api.dto.UsuarioDTO;
 import com.menteleve.api.model.Usuario;
 import com.menteleve.api.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public UsuarioDTO criarUsuario(UsuarioDTO dto) {
         if (usuarioRepository.existsByEmail(dto.getEmail())) {
@@ -22,7 +24,7 @@ public class UsuarioService {
         Usuario usuario = Usuario.builder()
                 .email(dto.getEmail())
                 .nome(dto.getNome())
-                .senha(dto.getEmail()) // TODO: Implementar hashing de senha
+                .senha(passwordEncoder.encode(dto.getEmail())) // senha padrão; prefira usar /auth/register
                 .ativo(true)
                 .build();
 
@@ -75,4 +77,3 @@ public class UsuarioService {
                 .build();
     }
 }
-
