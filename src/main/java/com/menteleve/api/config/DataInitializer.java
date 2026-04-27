@@ -4,10 +4,8 @@ import com.menteleve.api.model.*;
 import com.menteleve.api.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
-import java.time.LocalTime;
 
-@Component
+
 @RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner {
 
@@ -17,8 +15,6 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        inicializarExerciciosRespiracao();
-        inicializarFrasesMotivacionais();
     }
 
     private void inicializarExerciciosRespiracao() {
