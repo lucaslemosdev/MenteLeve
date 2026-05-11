@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { User, EnvelopeSimple, Lock, ArrowRight, WarningCircle, CheckCircle, Leaf } from '@phosphor-icons/react'
 import { useAuth } from '../context/AuthContext'
+import { PageTransition } from '../components/PageTransition'
 
 export function RegisterPage() {
   const navigate = useNavigate()
@@ -53,7 +54,8 @@ export function RegisterPage() {
   }
 
   return (
-    <div
+    <PageTransition>
+      <div
       className="min-h-[100dvh] flex"
       style={{ background: 'var(--color-bg)', fontFamily: 'var(--font-sans)' }}
     >
@@ -317,5 +319,6 @@ export function RegisterPage() {
         </div>
       </motion.div>
     </div>
+    </PageTransition>
   )
 }

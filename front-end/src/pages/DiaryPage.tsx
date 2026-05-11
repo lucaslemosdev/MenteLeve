@@ -23,6 +23,7 @@ import {
 import { useAuth } from '../context/AuthContext'
 import { diarioService } from '../services/diarioService'
 import type { DiarioEntry, CreateDiarioRequest, UpdateDiarioRequest } from '../services/diarioService'
+import { PageTransition } from '../components/PageTransition'
 
 // ─── Componente: Seletor de Humor ─────────────────────────────────────────────
 
@@ -519,7 +520,8 @@ export function DiaryPage() {
   }
 
   return (
-    <div
+    <PageTransition>
+      <div
       className="min-h-[100dvh]"
       style={{ background: 'var(--color-bg)', fontFamily: 'var(--font-sans)' }}
     >
@@ -663,5 +665,6 @@ export function DiaryPage() {
         )}
       </AnimatePresence>
     </div>
+    </PageTransition>
   )
 }

@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { EnvelopeSimple, Lock, ArrowRight, WarningCircle, Leaf } from '@phosphor-icons/react'
 import { useAuth } from '../context/AuthContext'
+import { PageTransition } from '../components/PageTransition'
 
 export function LoginPage() {
   const navigate = useNavigate()
@@ -37,7 +38,8 @@ export function LoginPage() {
   }
 
   return (
-    <div
+    <PageTransition>
+      <div
       className="min-h-[100dvh] flex"
       style={{ background: 'var(--color-bg)', fontFamily: 'var(--font-sans)' }}
     >
@@ -218,6 +220,18 @@ export function LoginPage() {
                 </div>
               </div>
 
+              <div className="flex justify-end mt-[-8px]">
+                <Link
+                  to="/forgot-password"
+                  className="text-xs font-medium transition-smooth"
+                  style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--color-primary-500)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--color-text-muted)')}
+                >
+                  Esqueci minha senha
+                </Link>
+              </div>
+
               {/* Botão */}
               <motion.button
                 type="submit"
@@ -268,5 +282,6 @@ export function LoginPage() {
         </div>
       </motion.div>
     </div>
+    </PageTransition>
   )
 }

@@ -52,4 +52,26 @@ public class AuthDTO {
         private String nome;
         private String email;
     }
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class ForgotPasswordRequest {
+        @NotBlank(message = "E-mail é obrigatório")
+        @Email(message = "E-mail inválido")
+        private String email;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class ResetPasswordRequest {
+        @NotBlank(message = "Token é obrigatório")
+        private String token;
+
+        @NotBlank(message = "Nova senha é obrigatória")
+        @Size(min = 6, message = "Senha deve ter pelo menos 6 caracteres")
+        private String novaSenha;
+    }
 }

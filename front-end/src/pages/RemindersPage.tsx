@@ -10,6 +10,7 @@ import { useAuth } from '../context/AuthContext'
 import { lembreteService } from '../services/lembreteService'
 import type { LembreteEntry, CreateLembreteRequest, UpdateLembreteRequest, TipoLembrete } from '../services/lembreteService'
 import { lembreteTemplates } from '../data/lembreteTemplates'
+import { PageTransition } from '../components/PageTransition'
 
 const TIPO_LABELS: Record<TipoLembrete, string> = {
   PAUSA: 'Pausa',
@@ -166,7 +167,7 @@ function LembreteForm({ initial, usuarioId, onSave, onCancel }: FormProps) {
         </div>
 
         {/* Tipo + Hora */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="flex flex-col gap-1.5">
             <label className="font-medium text-sm" style={{ color: 'var(--color-text)' }}>Tipo</label>
             <select value={tipo} onChange={e => setTipo(e.target.value as TipoLembrete)}
@@ -394,7 +395,8 @@ export function RemindersPage() {
   }
 
   return (
-    <div className="min-h-[100dvh]" style={{ background: 'var(--color-bg)', fontFamily: 'var(--font-sans)' }}>
+    <PageTransition>
+      <div className="min-h-[100dvh]" style={{ background: 'var(--color-bg)', fontFamily: 'var(--font-sans)' }}>
       {/* Header */}
       <header className="sticky top-0 z-10"
         style={{ background: 'rgba(245,247,244,0.85)', backdropFilter: 'blur(16px)', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
@@ -503,5 +505,6 @@ export function RemindersPage() {
         )}
       </AnimatePresence>
     </div>
+    </PageTransition>
   )
 }
