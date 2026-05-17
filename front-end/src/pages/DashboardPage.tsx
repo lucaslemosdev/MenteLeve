@@ -11,12 +11,12 @@ import {
   Heart,
   Moon,
   Sun,
-  MusicNotes,
   PlusCircle,
   Smiley,
   SmileySad,
   SmileyMeh,
   CalendarBlank,
+  ArrowsClockwise,
 } from '@phosphor-icons/react'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
@@ -24,8 +24,7 @@ import { PageTransition } from '../components/PageTransition'
 import { diarioService } from '../services/diarioService'
 import type { DiarioEntry } from '../services/diarioService'
 import { lembreteService } from '../services/lembreteService'
-import { fraseMotivacionalService } from '../services/fraseMotivacionalService'
-import type { FraseMotivacionalDTO } from '../services/fraseMotivacionalService'
+import { iaService } from '../services/iaService'
 
 // Componente do Header com o Theme Toggle
 function DashboardHeader() {
@@ -44,13 +43,6 @@ function DashboardHeader() {
         </div>
         
         <div className="flex items-center gap-2 sm:gap-4">
-          <button
-            className="flex items-center justify-center w-9 h-9 rounded-full transition-smooth hover:bg-[var(--color-surface-alt)]"
-            style={{ color: 'var(--color-text-muted)' }}
-            title="Sons relaxantes (Em breve)"
-          >
-            <MusicNotes size={18} />
-          </button>
           
           <button
             onClick={toggleTheme}
@@ -99,7 +91,23 @@ export function DashboardPage() {
   const [loading, setLoading] = useState(true)
   const [diarios, setDiarios] = useState<DiarioEntry[]>([])
   const [activeRemindersCount, setActiveRemindersCount] = useState(0)
-  const [quote, setQuote] = useState<FraseMotivacionalDTO | null>(null)
+  const [quote, setQuote] = useState<{ texto: string; autor: string } | null>(null)
+  const [quoteLoading, setQuoteLoading] = useState(false)
+
+  const gerarNovaFrase = async () => {
+    setQuoteLoading(true)
+    try {
+      const data = await iaService.gerarMensagemMotivacional()
+      setQuote({ texto: data.mensagem, autor: data.autor })
+    } catch {
+      setQuote({
+        texto: "Tudo bem ir devagar. O importante é não parar.",
+        autor: "Mente Leve"
+      })
+    } finally {
+      setQuoteLoading(false)
+    }
+  }
 
   useEffect(() => {
     async function fetchDashboardData() {
@@ -116,19 +124,8 @@ export function DashboardPage() {
           setActiveRemindersCount(ativos)
         }
 
-        try {
-          const quoteData = await fraseMotivacionalService.obterFraseDoDia()
-          setQuote(quoteData)
-        } catch {
-          setQuote({
-            id: 0,
-            texto: "Tudo bem ir devagar. O importante é não parar.",
-            autor: "Mente Leve",
-            categoria: "Acolhimento",
-            ativo: true,
-            dataFrase: ""
-          })
-        }
+        // Gerar frase via IA
+        await gerarNovaFrase()
       } catch (error) {
         console.error("Erro ao carregar dashboard:", error)
       } finally {
@@ -165,9 +162,18 @@ export function DashboardPage() {
             {quote && (
               <div className="rounded-3xl p-6 md:p-8 mb-10 relative overflow-hidden" style={{ background: 'var(--color-primary-100)' }}>
                 <Quotes size={80} weight="fill" className="absolute -top-4 -right-4 opacity-5" style={{ color: 'var(--color-primary-900)' }} />
-                <p className="text-xl md:text-2xl font-medium leading-relaxed max-w-3xl relative z-10" style={{ color: 'var(--color-primary-900)' }}>
+                <p className="text-xl md:text-2xl font-medium leading-relaxed max-w-3xl relative z-10 mb-4" style={{ color: 'var(--color-primary-900)' }}>
                   "{quote.texto}"
                 </p>
+                <button
+                  onClick={gerarNovaFrase}
+                  disabled={quoteLoading}
+                  className="relative z-10 flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-smooth hover:opacity-80 disabled:opacity-50"
+                  style={{ background: 'var(--color-primary-200)', color: 'var(--color-primary-900)' }}
+                >
+                  <ArrowsClockwise size={16} className={quoteLoading ? 'animate-spin' : ''} />
+                  {quoteLoading ? 'Gerando...' : 'Nova mensagem'}
+                </button>
               </div>
             )}
           </motion.div>
