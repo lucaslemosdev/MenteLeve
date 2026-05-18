@@ -16,14 +16,35 @@ function ActiveExercise({
   onFinish: () => void; 
   onStop: () => void;
 }) {
-  const [phase, setPhase] = useState<'inspirar' | 'segurar' | 'expirar'>('inspirar')
-  const [timeLeft, setTimeLeft] = useState(4) // Começa com inspirar 4s por padrão
+  // Parsear timings das instruções
+  const parseTimings = (instrucoes: string) => {
+    const regex = /TIMINGS:\s*([^\n]+)/
+    const match = instrucoes.match(regex)
+    
+    if (!match) {
+      return { inspirar: 4, segurar: 4, expirar: 4, pausar: 0 }
+    }
+
+    const timingParts = match[1].split(',').reduce((acc, part) => {
+      const [key, value] = part.trim().split('=')
+      acc[key?.trim()] = parseInt(value || '0')
+      return acc
+    }, {} as Record<string, number>)
+
+    return {
+      inspirar: timingParts.inspirar || 4,
+      segurar: timingParts.segurar || 4,
+      expirar: timingParts.expirar || 4,
+      pausar: timingParts.pausar || 0
+    }
+  }
+
+  const timings = parseTimings(exercise.instrucoes)
+  const [phase, setPhase] = useState<'inspirar' | 'segurar' | 'expirar' | 'pausar'>('inspirar')
+  const [timeLeft, setTimeLeft] = useState(timings.inspirar)
   const [isPaused, setIsPaused] = useState(false)
   const [totalTimeLeft, setTotalTimeLeft] = useState(exercise.duracaoSegundos || 60)
   
-  // Analisar instruções para extrair tempos se possível, caso contrário usar padrão 4-4-4 ou similar.
-  // Vamos usar um padrão 4-4-4 para demonstração, já que a string instrucoes pode variar
-  const timings = { inspirar: 4, segurar: 4, expirar: 4 }
   
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>
@@ -34,9 +55,12 @@ function ActiveExercise({
           if (prev <= 1) {
             // Troca de fase
             if (phase === 'inspirar') {
-              setPhase('segurar')
-              return timings.segurar
+              setPhase(timings.segurar > 0 ? 'segurar' : 'expirar')
+              return timings.segurar > 0 ? timings.segurar : timings.expirar
             } else if (phase === 'segurar') {
+              setPhase(timings.pausar > 0 ? 'pausar' : 'expirar')
+              return timings.pausar > 0 ? timings.pausar : timings.expirar
+            } else if (phase === 'pausar') {
               setPhase('expirar')
               return timings.expirar
             } else {
@@ -63,7 +87,29 @@ function ActiveExercise({
   const getCircleScale = () => {
     if (phase === 'inspirar') return 1.5
     if (phase === 'segurar') return 1.5
+    if (phase === 'pausar') return 1
     return 1 // expirar
+  }
+
+  const getPhaseLabel = () => {
+    if (phase === 'inspirar') return 'Inspire'
+    if (phase === 'segurar') return 'Segure'
+    if (phase === 'pausar') return 'Pausa Vazia'
+    return 'Expire'
+  }
+
+  const getPhaseDescription = () => {
+    if (phase === 'inspirar') return '(Pulmões cheios)'
+    if (phase === 'segurar') return '(Prenda a respiração)'
+    if (phase === 'pausar') return '(Não respire)'
+    return '(Pulmões vazios)'
+  }
+
+  const getAnimationDuration = () => {
+    if (phase === 'inspirar') return timings.inspirar
+    if (phase === 'segurar') return timings.segurar
+    if (phase === 'pausar') return timings.pausar
+    return timings.expirar
   }
 
   return (
@@ -80,7 +126,7 @@ function ActiveExercise({
         <motion.div
           animate={{ scale: getCircleScale() }}
           transition={{ 
-            duration: phase === 'segurar' ? 0 : phase === 'inspirar' ? timings.inspirar : timings.expirar,
+            duration: getAnimationDuration(),
             ease: "easeInOut"
           }}
           className="absolute w-32 h-32 rounded-full"
@@ -89,7 +135,7 @@ function ActiveExercise({
         <motion.div
           animate={{ scale: getCircleScale() }}
           transition={{ 
-            duration: phase === 'segurar' ? 0 : phase === 'inspirar' ? timings.inspirar : timings.expirar,
+            duration: getAnimationDuration(),
             ease: "easeInOut"
           }}
           className="absolute w-24 h-24 rounded-full"
@@ -99,9 +145,10 @@ function ActiveExercise({
         {/* Texto do centro */}
         <div className="z-10 text-center">
           <span className="block text-2xl font-medium" style={{ color: 'var(--color-primary-900)' }}>
-            {phase === 'inspirar' && 'Inspire'}
-            {phase === 'segurar' && 'Segure'}
-            {phase === 'expirar' && 'Expire'}
+            {getPhaseLabel()}
+          </span>
+          <span className="block text-xs mb-2" style={{ color: 'var(--color-primary-700)' }}>
+            {getPhaseDescription()}
           </span>
           <span className="block text-lg" style={{ color: 'var(--color-primary-800)' }}>
             {timeLeft}s
@@ -153,33 +200,7 @@ export function BreathingPage() {
     fetchExercises()
   }, [])
 
-  // Se não houver exercícios na API, usamos alguns mockados para não quebrar a experiência
-  const displayExercises = exercises.length > 0 ? exercises : [
-    {
-      id: 1,
-      nome: 'Relaxar a ansiedade',
-      descricao: 'Respiracão 4-7-8 para acalmar rapidamente o sistema nervoso.',
-      duracaoSegundos: 60,
-      instrucoes: 'Inspire 4s, Segure 7s, Expire 8s',
-      ativo: true
-    },
-    {
-      id: 2,
-      nome: 'Recuperar o foco',
-      descricao: 'Respiração em caixa (Box Breathing) para clareza mental.',
-      duracaoSegundos: 60,
-      instrucoes: 'Inspire 4s, Segure 4s, Expire 4s, Segure 4s',
-      ativo: true
-    },
-    {
-      id: 3,
-      nome: 'Pausa rápida',
-      descricao: 'Apenas 1 minuto focado na sua respiração natural.',
-      duracaoSegundos: 60,
-      instrucoes: 'Acompanhe o ritmo confortavelmente',
-      ativo: true
-    }
-  ]
+  const displayExercises = exercises
 
   return (
     <PageTransition>

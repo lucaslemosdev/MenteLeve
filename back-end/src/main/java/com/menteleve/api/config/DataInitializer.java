@@ -4,8 +4,10 @@ import com.menteleve.api.model.*;
 import com.menteleve.api.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
 
 
+@Component
 @RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner {
 
@@ -15,52 +17,73 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        inicializarExerciciosRespiracao();
+        inicializarFrasesMotivacionais();
     }
 
     private void inicializarExerciciosRespiracao() {
-        if (exercicioRespiracaoRepository.count() == 0) {
-            // Exercício 1: Respiração 4-7-8
-            ExercicioRespiracao exercicio1 = ExercicioRespiracao.builder()
-                    .nome("Respiração 4-7-8")
-                    .descricao("Técnica de respiração para acalmar a mente e corpo")
-                    .duracaoSegundos(240)
-                    .instrucoes("1. Inspire profundamente pelo nariz contando até 4\n" +
-                            "2. Prenda a respiração contando até 7\n" +
-                            "3. Expire lentamente pela boca contando até 8\n" +
-                            "4. Repita 4 vezes")
-                    .ativo(true)
-                    .build();
+        // Limpar exercícios antigos
+        exercicioRespiracaoRepository.deleteAll();
+        
+        // Exercício 1: Respiração 4-7-8 (para acalmar)
+        ExercicioRespiracao exercicio1 = ExercicioRespiracao.builder()
+                .nome("Respiração 4-7-8")
+                .descricao("Técnica clássica para acalmar a mente e reduzir ansiedade rapidamente")
+                .duracaoSegundos(120)
+                .instrucoes("TIMINGS: inspirar=4,segurar=7,expirar=8\n\n" +
+                        "1. Inspire profundamente pelo nariz contando até 4\n" +
+                        "2. Prenda a respiração contando até 7\n" +
+                        "3. Expire lentamente pela boca contando até 8\n" +
+                        "4. Repita até completar o tempo")
+                .ativo(true)
+                .build();
 
-            // Exercício 2: Respiração Abdominal
-            ExercicioRespiracao exercicio2 = ExercicioRespiracao.builder()
-                    .nome("Respiração Abdominal")
-                    .descricao("Respiração profunda focada no abdômen para relaxamento")
-                    .duracaoSegundos(300)
-                    .instrucoes("1. Sente-se confortavelmente\n" +
-                            "2. Coloque uma mão no peito e outra no abdômen\n" +
-                            "3. Inspire pelo nariz, deixando o abdômen inchar\n" +
-                            "4. Expire lentamente pela boca\n" +
-                            "5. Repita por 5 minutos")
-                    .ativo(true)
-                    .build();
+        // Exercício 2: Box Breathing (Respiração em Caixa) - para foco e clareza
+        ExercicioRespiracao exercicio2 = ExercicioRespiracao.builder()
+                .nome("Box Breathing")
+                .descricao("Técnica usada por militares para melhorar foco. Forma um quadrado: inspire, segure, expire, pausa")
+                .duracaoSegundos(120)
+                .instrucoes("TIMINGS: inspirar=4,segurar=4,expirar=4,pausar=4\n\n" +
+                        "LADO 1 - INSPIRE: Pelo nariz, contando até 4\n" +
+                        "LADO 2 - SEGURE: Prenda a respiração, contando até 4\n" +
+                        "LADO 3 - EXPIRE: Pela boca, contando até 4\n" +
+                        "LADO 4 - PAUSA: Não respire (pulmões vazios), contando até 4\n\n" +
+                        "Repita formando um quadrado perfeito. Cada ciclo completo = 16 segundos.")
+                .ativo(true)
+                .build();
 
-            // Exercício 3: Respiração Alternada
-            ExercicioRespiracao exercicio3 = ExercicioRespiracao.builder()
-                    .nome("Respiração Alternada")
-                    .descricao("Técnica de respiração pelas narinas alternadas para equilibrio")
-                    .duracaoSegundos(180)
-                    .instrucoes("1. Feche a narina direita com o dedo polegar\n" +
-                            "2. Inspire pela narina esquerda\n" +
-                            "3. Feche a narina esquerda, solte a direita\n" +
-                            "4. Expire pela narina direita\n" +
-                            "5. Repita alternando")
-                    .ativo(true)
-                    .build();
+        // Exercício 3: Respiração Alternada (Nadi Shodhana) - para equilíbrio
+        ExercicioRespiracao exercicio3 = ExercicioRespiracao.builder()
+                .nome("Respiração Alternada")
+                .descricao("Técnica yogui que alterna as narinas, equilibrando o corpo e a mente")
+                .duracaoSegundos(120)
+                .instrucoes("TIMINGS: inspirar=4,segurar=4,expirar=4\n\n" +
+                        "1. Feche a narina DIREITA com o dedo polegar\n" +
+                        "2. Inspire pela narina ESQUERDA contando até 4\n" +
+                        "3. Feche a narina ESQUERDA, segure até 4\n" +
+                        "4. Solte a narina DIREITA, expire contando até 4\n" +
+                        "5. Inspire pela narina DIREITA e repita alternando")
+                .ativo(true)
+                .build();
 
-            exercicioRespiracaoRepository.save(exercicio1);
-            exercicioRespiracaoRepository.save(exercicio2);
-            exercicioRespiracaoRepository.save(exercicio3);
-        }
+        // Exercício 4: Respiração Energizante (Kapalabhati) - para energia
+        ExercicioRespiracao exercicio4 = ExercicioRespiracao.builder()
+                .nome("Respiração Energizante")
+                .descricao("Técnica dinâmica e rápida para revitalizar e aumentar energia e clareza mental")
+                .duracaoSegundos(120)
+                .instrucoes("TIMINGS: inspirar=4,expirar=2\n\n" +
+                        "1. Inspire profundamente pelo nariz contando até 4\n" +
+                        "2. Expire com FORÇA e rapidez pela boca contando até 2\n" +
+                        "3. Mantenha um ritmo constante e energético (mais rápido que as outras)\n" +
+                        "4. Repita até completar o tempo\n\n" +
+                        "NOTA: Esta é a mais intensa e dinâmica. Pratique em um ambiente seguro.")
+                .ativo(true)
+                .build();
+
+        exercicioRespiracaoRepository.save(exercicio1);
+        exercicioRespiracaoRepository.save(exercicio2);
+        exercicioRespiracaoRepository.save(exercicio3);
+        exercicioRespiracaoRepository.save(exercicio4);
     }
 
     private void inicializarFrasesMotivacionais() {
@@ -147,4 +170,5 @@ public class DataInitializer implements CommandLineRunner {
         }
     }
 }
+
 
